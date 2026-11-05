@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know Your District</title>
+    <link rel="stylesheet" href="{% static 'frontend/css/styles.css' %}">
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Know Your District</h2>
+
+            <button type="button">+ New Chat</button>
+
+            <h3>History</h3>
+            <div id="history">
+                <!-- Chat history will go here -->
+            </div>
+
+            <h3>District Selection</h3>
+
+            <label for="county">Island / County</label>
+            <select id="county">
+                <option value="">Select County</option>
+            </select>
+
+            <label for="district">District</label>
+            <select id="district">
+                <option value="">Select District</option>
+            </select>
+        </aside>
+
+        <!-- Main Chat Section -->
+        <main class="main-content">
+
+            <header>
+                <h1>District Assistant</h1>
+                <button type="button">Accessibility</button>
+            </header>
+
+            <section class="chat-area">
+                <!-- AI responses will appear here -->
+            </section>
+
+            <div class="prompt-area">
+                <textarea placeholder="Ask about your district..."></textarea>
+                <button type="button">Send</button>
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+</html>
