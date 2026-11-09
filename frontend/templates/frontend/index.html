@@ -1,3 +1,4 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -43,18 +44,35 @@
                 <button type="button">Accessibility</button>
             </header>
 
-            <section class="chat-area">
-                <!-- AI responses will appear here -->
+            <!-- Chat Messages -->
+            <section
+                class="chat-area"
+                id="chat-messages"
+                aria-live="polite">
             </section>
 
+            <!-- Message Input -->
             <div class="prompt-area">
-                <textarea placeholder="Ask about your district..."></textarea>
-                <button type="button">Send</button>
+                <textarea
+                    id="chat-input"
+                    placeholder="Ask about your district..."></textarea>
+
+                <button type="button" id="send-button">
+                    Send
+                </button>
             </div>
 
         </main>
 
     </div>
 
+    <!-- Markdown formatting -->
+<script src="https://cdn.jsdelivr.net/npm/marked@16.4.1/lib/marked.umd.js"></script>
+
+<!-- HTML sanitization -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+
+<!-- Our chatbot JavaScript -->
+<script src="{% static 'frontend/js/chat.js' %}"></script>
 </body>
 </html>
