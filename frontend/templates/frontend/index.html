@@ -1,0 +1,78 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know Your District</title>
+    <link rel="stylesheet" href="{% static 'frontend/css/styles.css' %}">
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Know Your District</h2>
+
+            <button type="button">+ New Chat</button>
+
+            <h3>History</h3>
+            <div id="history">
+                <!-- Chat history will go here -->
+            </div>
+
+            <h3>District Selection</h3>
+
+            <label for="county">Island / County</label>
+            <select id="county">
+                <option value="">Select County</option>
+            </select>
+
+            <label for="district">District</label>
+            <select id="district">
+                <option value="">Select District</option>
+            </select>
+        </aside>
+
+        <!-- Main Chat Section -->
+        <main class="main-content">
+
+            <header>
+                <h1>District Assistant</h1>
+                <button type="button">Accessibility</button>
+            </header>
+
+            <!-- Chat Messages -->
+            <section
+                class="chat-area"
+                id="chat-messages"
+                aria-live="polite">
+            </section>
+
+            <!-- Message Input -->
+            <div class="prompt-area">
+                <textarea
+                    id="chat-input"
+                    placeholder="Ask about your district..."></textarea>
+
+                <button type="button" id="send-button">
+                    Send
+                </button>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Markdown formatting -->
+<script src="https://cdn.jsdelivr.net/npm/marked@16.4.1/lib/marked.umd.js"></script>
+
+<!-- HTML sanitization -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+
+<!-- Our chatbot JavaScript -->
+<script src="{% static 'frontend/js/chat.js' %}"></script>
+</body>
+</html>
