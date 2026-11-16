@@ -141,6 +141,9 @@ button {
    ========================================= */
 
 header {
+    position: relative;              
+    isolation: isolate;              
+
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -151,17 +154,38 @@ header {
     border-bottom: 1px solid var(--border);
 }
 
+
+
 /* ʻIke title */
 header h1,
 .site-title {
     margin: 0;
+    padding: 10px 22px;
+    border-radius: 12px;
     color: #14545a;
     font-size: 1.5rem;
     line-height: 1.3;
+    font-weight: 800;                                  
+    text-shadow: 0 0 6px #fff, 0 0 12px #fff;           
+}
+
+.title-bg {
+    object-position: center 18%;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.4;
+    z-index: -1;
 }
 
 /* Supports the title markup we added */
 .site-title {
+position: relative;
+    isolation: isolate;
+    overflow: hidden;
+
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -174,8 +198,9 @@ header h1,
 
 .title-subtitle {
     font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--muted);
+    font-weight: 600;
+    color: var(--text);
+    text-shadow: 0 0 6px #fff, 0 0 10px #fff;   
 }
 
 /* =========================================
@@ -192,17 +217,13 @@ header h1,
 
     padding: 28px;
     overflow-y: auto;
-<<<<<<< HEAD
     background-image:
     linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), 
     url("../images/Hawaiian_Islands_Background.jpg");
     background-size: cover;
     background-position: center;
-=======
-
-    /* No large background photograph */
-    background: var(--page-bg);
->>>>>>> 673242c6e7aeaa9dbcbb57f571e38d37eb2133e2
+            
+    border-radius: 18px;
 }
 
 /* Chat bubbles */
@@ -226,13 +247,8 @@ header h1,
 
     background: var(--primary);
     color: var(--primary-text);
-<<<<<<< HEAD
-    border: 2px solid white;
-=======
     border-radius: 16px 16px 4px 16px;
-
     white-space: pre-wrap;
->>>>>>> 673242c6e7aeaa9dbcbb57f571e38d37eb2133e2
 }
 
 /* ʻIke messages */
@@ -428,6 +444,59 @@ header h1,
 }
 
 /* =========================================
+   CHAT HISTORY
+   ========================================= */
+ 
+.history-empty {
+    margin: 0;
+    color: var(--muted);
+}
+ 
+.history-item {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+ 
+.history-open,
+.history-delete {
+    padding: 8px 10px;
+ 
+    background: #ffffff;
+    color: var(--text);
+ 
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+ 
+.history-open {
+    flex: 1;
+    min-width: 0;
+ 
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+ 
+.history-delete {
+    flex: none;
+    padding: 8px 12px;
+}
+ 
+.history-open:hover,
+.history-delete:hover {
+    background: #e7f3ed;
+}
+ 
+/* The chat you are viewing: teal outline plus bold text */
+.history-item.active .history-open {
+    border-color: var(--primary);
+    box-shadow: inset 0 0 0 1px var(--primary);
+    font-weight: 600;
+}
+
+/* =========================================
    COLORBLIND-FRIENDLY HIGH-CONTRAST MODE
    ========================================= */
 
@@ -490,6 +559,42 @@ html[data-colorblind="true"] textarea {
 html[data-colorblind="true"] :focus-visible {
     outline: 3px solid #b45309;
     outline-offset: 3px;
+}
+
+/* Colorblind mode: plain background (no photo behind the chat) */
+html[data-colorblind="true"] .chat-area {
+    background-image: none;
+    background-color: var(--page-bg);
+}
+
+/* Colorblind mode: blue hover colors instead of teal */
+html[data-colorblind="true"] #new-chat-button:hover,
+html[data-colorblind="true"] #send-button:hover {
+    background: #003b66;
+}
+
+/* Colorblind mode: neutral Accessibility button instead of green */
+html[data-colorblind="true"] #accessibility-button {
+    background: #ffffff;
+    color: #111111;
+}
+
+html[data-colorblind="true"] #accessibility-button:hover,
+html[data-colorblind="true"] #accessibility-button[aria-expanded="true"] {
+    background: #e5e5e5;
+}
+
+/* Colorblind mode: history list */
+html[data-colorblind="true"] .history-open:hover,
+html[data-colorblind="true"] .history-delete:hover {
+    background: #e5e5e5;
+}
+ 
+/* The open chat is shown with inverted colors, not just a color change */
+html[data-colorblind="true"] .history-item.active .history-open {
+    background: #111111;
+    color: #ffffff;
+    box-shadow: none;
 }
 
 /* =========================================

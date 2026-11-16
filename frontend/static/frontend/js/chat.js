@@ -34,6 +34,148 @@ document.addEventListener("DOMContentLoaded", () => {
     const fontRadios = document.querySelectorAll('input[name="font-size"]');
 
     let currentRequest = null;
+    
+ // Chat history (saved in this browser)
+    const historyList = document.getElementById("history");
+    const CHATS_KEY = "kyd-chats";
+    let chats = loadChats();
+    let currentChatId = null;
+    let messages = [];
+ 
+    function loadChats() {
+        try {
+            const saved = JSON.parse(localStorage.getItem(CHATS_KEY) || "[]");
+            return Array.isArray(saved) ? saved : [];
+        } catch (e) {
+            return [];
+        }
+    }
+ 
+    function persistChats() {
+        try {
+            localStorage.setItem(CHATS_KEY, JSON.stringify(chats));
+        } catch (e) {
+            // Storage full or unavailable: history just won't be saved
+        }
+    }
+ 
+    function cancelRequest() {
+        if (currentRequest) {
+            currentRequest.abort();
+            currentRequest = null;
+        }
+    }
+ 
+    function showReply(element, text) {
+        if (typeof marked !== "undefined" && typeof DOMPurify !== "undefined") {
+            element.innerHTML = DOMPurify.sanitize(marked.parse(text));
+        } else {
+            element.textContent = text;
+        }
+    }
+ 
+    function saveCurrentChat() {
+        if (messages.length === 0) return;
+ 
+        let chat = chats.find((c) => c.id === currentChatId);
+ 
+        if (!chat) {
+            currentChatId = String(Date.now());
+            const first = messages[0].text;
+            chat = {
+                id: currentChatId,
+                title: first.length > 40 ? first.slice(0, 40) + "\u2026" : first,
+                messages: []
+            };
+        }
+ 
+        chat.messages = messages;
+        chats = [chat, ...chats.filter((c) => c !== chat)];
+        persistChats();
+        renderHistory();
+    }
+ 
+    function startNewChat() {
+        cancelRequest();
+        currentChatId = null;
+        messages = [];
+        chatArea.innerHTML = "";
+        chatInput.value = "";
+        renderHistory();
+        chatInput.focus();
+    }
+ 
+    function openChat(id) {
+        const chat = chats.find((c) => c.id === id);
+        if (!chat) return;
+ 
+        cancelRequest();
+        currentChatId = id;
+        messages = chat.messages;
+        chatArea.innerHTML = "";
+ 
+        messages.forEach((m) => {
+            const element = addMessage("", m.sender);
+            if (m.sender === "assistant") {
+                showReply(element, m.text);
+            } else {
+                element.textContent = m.text;
+            }
+        });
+ 
+        renderHistory();
+        chatInput.focus();
+    }
+ 
+    function deleteChat(id) {
+        chats = chats.filter((c) => c.id !== id);
+        persistChats();
+ 
+        if (id === currentChatId) {
+            startNewChat();
+        } else {
+            renderHistory();
+        }
+    }
+ 
+    function renderHistory() {
+        historyList.innerHTML = "";
+ 
+        if (chats.length === 0) {
+            const empty = document.createElement("p");
+            empty.className = "history-empty";
+            empty.textContent = "No saved chats yet.";
+            historyList.appendChild(empty);
+            return;
+        }
+ 
+        chats.forEach((chat) => {
+            const row = document.createElement("div");
+            row.className = "history-item";
+            const isActive = chat.id === currentChatId;
+            if (isActive) row.classList.add("active");
+ 
+            const open = document.createElement("button");
+            open.type = "button";
+            open.className = "history-open";
+            open.textContent = chat.title;
+            open.title = chat.title;
+            if (isActive) open.setAttribute("aria-current", "true");
+            open.addEventListener("click", () => openChat(chat.id));
+ 
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "history-delete";
+            remove.textContent = "\u00d7";
+            remove.setAttribute("aria-label", "Delete chat: " + chat.title);
+            remove.addEventListener("click", () => deleteChat(chat.id));
+ 
+            row.append(open, remove);
+            historyList.appendChild(row);
+        });
+    }
+ 
+    renderHistory();
 
     //Accessibility menu
     fontRadios.forEach((radio) => {
@@ -76,17 +218,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ---- New chat ----
-    newChatButton.addEventListener("click", () => {
-        if (currentRequest) {
-            currentRequest.abort();
-            currentRequest = null;
-        }
-
-        chatArea.innerHTML = "";
-        chatInput.value = "";
-        chatInput.focus();
-    });
+    //New chat
+    newChatButton.addEventListener("click", startNewChat);
 
     function addMessage(text, sender) {
         const message = document.createElement("div");
@@ -120,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     "Content-Type": "application/json",
                     "X-CSRFToken": getCookie("csrftoken")
                 },
-                body: JSON.stringify({ message })
+                 body: JSON.stringify({ message })
             });
 
             const data = await response.json();
@@ -129,13 +262,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(data.error || "Something went wrong.");
             }
 
-            if (typeof marked !== "undefined" && typeof DOMPurify !== "undefined") {
-    loadingMessage.innerHTML = DOMPurify.sanitize(
-        marked.parse(data.reply || "")
-    );
-} else {
-    loadingMessage.textContent = data.reply || "";
-}
+            const reply = data.reply || "";
+            showReply(loadingMessage, reply);
+ 
+            // Save this exchange to the current chat's history
+            messages.push(
+                { sender: "user", text: message },
+                { sender: "assistant", text: reply }
+            );
+            saveCurrentChat();
 
         } catch (error) {
           if (error.name !== "AbortError") {
