@@ -16,7 +16,7 @@
         <aside class="sidebar">
             <h2>Know Your District</h2>
 
-            <button type="button">+ New Chat</button>
+            <button type="button" id="new-chat-button">+ New Chat</button>
 
             <h3>History</h3>
             <div id="history">
@@ -40,8 +40,32 @@
         <main class="main-content">
 
             <header>
-                <h1>District Assistant</h1>
-                <button type="button">Accessibility</button>
+                <h1>Hawaii District Assistant</h1>
+                <div class="accessibility-menu">
+                <button type="button" id="accessibility-button" aria-expanded="false" aria-controls="accessibility-panel">Accessibility</button>
+                <div id="accessibility-panel" class="accessibility-panel" role="group" aria-label="Accessibility settings" hidden>
+                         <fieldset>
+                             <legend>Text size</legend>
+                             <label>
+                                 <input type="radio" name="font-size" value="small">
+                                 Small
+                             </label>
+                             <label>
+                                 <input type="radio" name="font-size" value="medium" checked>
+                                 Medium
+                             </label>
+                             <label>
+                                 <input type="radio" name="font-size" value="large">
+                                 Large
+                             </label>
+                         </fieldset>
+ 
+                         <label class="toggle-row">
+                             <input type="checkbox" id="colorblind-toggle">
+                             Colorblind mode
+                         </label>
+                     </div>
+                 </div>
             </header>
 
             <!-- Chat Messages -->
