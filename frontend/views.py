@@ -74,7 +74,7 @@ def detect_coordinates(message):
     return latitude, longitude
 
 
-# Groq chatbot
+# Groq chatbot — ʻIke
 @require_POST
 def chat(request):
     try:
@@ -200,8 +200,15 @@ def chat(request):
                 {
                     "role": "system",
                     "content": (
-                        "You are Know Your District, a helpful "
-                        "assistant for understanding Hawaiʻi's "
+                        "You are ʻIke, the AI assistant for "
+                        "Know Your District, a civic information "
+                        "website focused on Hawaiʻi. "
+                        "Your name is ʻIke, not Know Your District. "
+                        "Introduce yourself as ʻIke when greeting "
+                        "users or when asked who you are. "
+                        "Be welcoming, helpful, and respectful "
+                        "of Hawaiʻi and its communities. "
+                        "Help residents understand Hawaiʻi's "
                         "legislative districts. "
                         "Explain information clearly and accurately. "
                         "Use verified Census data provided in the "
