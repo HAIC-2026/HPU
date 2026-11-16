@@ -16,32 +16,79 @@
         <aside class="sidebar">
             <h2>Know Your District</h2>
 
-            <button type="button">+ New Chat</button>
+            <button type="button" id="new-chat-button">
+                + New Chat
+            </button>
 
             <h3>History</h3>
             <div id="history">
                 <!-- Chat history will go here -->
             </div>
-
-            <h3>District Selection</h3>
-
-            <label for="county">Island / County</label>
-            <select id="county">
-                <option value="">Select County</option>
-            </select>
-
-            <label for="district">District</label>
-            <select id="district">
-                <option value="">Select District</option>
-            </select>
         </aside>
 
         <!-- Main Chat Section -->
         <main class="main-content">
 
             <header>
-                <h1>District Assistant</h1>
-                <button type="button">Accessibility</button>
+                <h1 class="site-title">
+    <span class="title-flower" aria-hidden="true">🌺</span>
+    ʻIke
+    <span class="title-subtitle">Your Hawaiʻi District Assistant</span>
+</h1>
+
+                <div class="accessibility-menu">
+                    <button
+                        type="button"
+                        id="accessibility-button"
+                        aria-expanded="false"
+                        aria-controls="accessibility-panel">
+                        Accessibility
+                    </button>
+
+                    <div
+                        id="accessibility-panel"
+                        class="accessibility-panel"
+                        role="group"
+                        aria-label="Accessibility settings"
+                        hidden>
+
+                        <fieldset>
+                            <legend>Text size</legend>
+
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="font-size"
+                                    value="small">
+                                Small
+                            </label>
+
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="font-size"
+                                    value="medium"
+                                    checked>
+                                Medium
+                            </label>
+
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="font-size"
+                                    value="large">
+                                Large
+                            </label>
+                        </fieldset>
+
+                        <label class="toggle-row">
+                            <input
+                                type="checkbox"
+                                id="colorblind-toggle">
+                            Colorblind mode
+                        </label>
+                    </div>
+                </div>
             </header>
 
             <!-- Chat Messages -->
@@ -67,12 +114,13 @@
     </div>
 
     <!-- Markdown formatting -->
-<script src="https://cdn.jsdelivr.net/npm/marked@16.4.1/lib/marked.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@16.4.1/lib/marked.umd.js"></script>
 
-<!-- HTML sanitization -->
-<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+    <!-- HTML sanitization -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
 
-<!-- Our chatbot JavaScript -->
-<script src="{% static 'frontend/js/chat.js' %}"></script>
+    <!-- Chatbot JavaScript -->
+    <script src="{% static 'frontend/js/chat.js' %}"></script>
+
 </body>
 </html>
