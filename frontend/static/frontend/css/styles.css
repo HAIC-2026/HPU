@@ -278,3 +278,67 @@ button {
 #accessibility-button[aria-expanded="true"] {
     background-color: #e8edf2;
 }
+
+
+/* Improved colorblind-friendly high-contrast mode */
+html[data-colorblind="true"] {
+    --primary: #005a9c;
+    --primary-text: #ffffff;
+    --assistant-border: #333333;
+}
+
+/* Page background */
+html[data-colorblind="true"] body {
+    background-color: #ffffff;
+    color: #111111;
+}
+
+/* Sidebar */
+html[data-colorblind="true"] .sidebar {
+    background-color: #f0f0f0;
+    border-right: 2px solid #333333;
+}
+
+/* Header */
+html[data-colorblind="true"] header {
+    background-color: #ffffff;
+    border-bottom: 2px solid #333333;
+}
+
+/* Assistant messages */
+html[data-colorblind="true"] .chat-message.assistant {
+    background-color: #ffffff;
+    color: #111111;
+    border: 2px solid #333333;
+}
+
+/* User messages */
+html[data-colorblind="true"] .chat-message.user {
+    background-color: #005a9c;
+    color: #ffffff;
+    border: 2px solid #003b66;
+}
+
+/* Buttons */
+html[data-colorblind="true"] button {
+    border: 2px solid #111111;
+    font-weight: bold;
+}
+
+/* Accessibility menu */
+html[data-colorblind="true"] .accessibility-panel {
+    background-color: #ffffff;
+    color: #111111;
+    border: 2px solid #111111;
+}
+
+/* Input field */
+html[data-colorblind="true"] textarea {
+    border: 2px solid #333333;
+}
+
+/* Visible keyboard focus */
+html[data-colorblind="true"] :focus-visible {
+    outline: 3px solid #b45309;
+    outline-offset: 3px;
+}
