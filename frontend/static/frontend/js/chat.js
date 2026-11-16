@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let currentRequest = null;
 
-    // ---- Accessibility menu ----
+    //Accessibility menu
     fontRadios.forEach((radio) => {
         radio.checked = radio.value === a11y.fontSize;
         radio.addEventListener("change", () => {

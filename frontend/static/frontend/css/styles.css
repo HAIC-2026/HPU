@@ -95,6 +95,11 @@ header h1 {
     gap: 16px;
     padding: 24px;
     overflow-y: auto;
+    background-image:
+    linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), 
+    url("../images/Hawaiian_Islands_Background.jpg");
+    background-size: cover;
+    background-position: center;
 }
 
 /* Message bubbles */
@@ -108,6 +113,7 @@ header h1 {
     overflow-wrap: anywhere;
     white-space: normal;
     flex-shrink: 0;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
 }
 
 /* User messages */
@@ -115,6 +121,7 @@ header h1 {
     align-self: flex-end;
     background-color: var(--primary);
     color: var(--primary-text);
+    border: 2px solid white;
 }
 
 /* AI messages */
