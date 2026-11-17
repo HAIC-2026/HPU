@@ -9,6 +9,11 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import ensure_csrf_cookie
 
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from .models import Conversation, ChatMessage
+
+
 from dotenv import load_dotenv
 from groq import Groq
 
@@ -24,8 +29,51 @@ logger = logging.getLogger(__name__)
 # Homepage
 @ensure_csrf_cookie
 def home(request):
+    if not request.session.session_key:
+        request.session.create()
     return render(request, "frontend/index.html")
 
+def _session_conversation(request, conversation_id):
+    return get_object_or_404(
+        Conversation,
+        pk=conversation_id,
+        session_key=request.session.session_key
+    )
+
+
+def chat_history(request):
+    conversations = Conversation.objects.filter(
+        session_key=request.session.session_key
+    )
+
+    return JsonResponse({
+        "conversations": [
+            {
+                "id": item.id,
+                "title": item.title,
+                "updated_at": item.updated_at.isoformat()
+            }
+            for item in conversations
+        ]
+    })
+
+
+def conversation_detail(request, conversation_id):
+    conversation = _session_conversation(
+        request, conversation_id
+    )
+
+    return JsonResponse({
+        "id": conversation.id,
+        "title": conversation.title,
+        "messages": [
+            {
+                "role": item.role,
+                "content": item.content
+            }
+            for item in conversation.messages.all()
+        ]
+    })
 
 # Detect House or Senate district in a user's question
 def detect_district(message):
@@ -81,6 +129,8 @@ def chat(request):
         data = json.loads(request.body)
 
         message = data.get("message", "")
+        conversation_id = data.get("conversation_id")
+
 
         if not isinstance(message, str) or not message.strip():
             return JsonResponse(
@@ -90,6 +140,7 @@ def chat(request):
 
         message = message.strip()
 
+          
         # Identify districts from coordinates when provided
         coordinates = detect_coordinates(message)
         location_districts = None
@@ -132,6 +183,48 @@ def chat(request):
                 {"error": "AI service is not configured."},
                 status=503
             )
+        
+         # Create or retrieve the conversation
+        if not request.session.session_key:
+            request.session.create()
+
+        if conversation_id:
+            conversation = Conversation.objects.filter(
+                id=conversation_id,
+                session_key=request.session.session_key
+            ).first()
+
+            if not conversation:
+                return JsonResponse(
+                    {"error": "Conversation not found."},
+                    status=404
+                )
+        else:
+            conversation = Conversation.objects.create(
+                session_key=request.session.session_key,
+                title="New conversation"
+            )
+
+        # Load earlier messages BEFORE saving the new user message
+        history = [
+            {
+                "role": item.role,
+                "content": item.content
+            }
+            for item in conversation.messages.all()
+        ]
+
+        # Set the title using the first message
+        if not history:
+            conversation.title = message[:60]
+            conversation.save(update_fields=["title"])
+
+        # Save the user's new message
+        ChatMessage.objects.create(
+            conversation=conversation,
+            role="user",
+            content=message
+        )
 
         # Prepare verified Census information for Groq
         census_context = ""
@@ -227,6 +320,10 @@ def chat(request):
                         "searched government websites."
                     )
                 },
+                 # Include previous messages in this conversation
+                *history,
+
+                # Include the current user message
                 {
                     "role": "user",
                     "content": (
@@ -241,10 +338,25 @@ def chat(request):
         )
 
         reply = response.choices[0].message.content
+        if not reply:
+            reply = "No response generated."
+
+        # Save ʻIke's response
+        ChatMessage.objects.create(
+            conversation=conversation,
+            role="assistant",
+            content=reply
+        )
+
+        # Update conversation activity
+        conversation.save(update_fields=["updated_at"])
 
         return JsonResponse({
-            "reply": reply or "No response generated."
+            "reply": reply,
+            "conversation_id": conversation.id,
+            "title": conversation.title
         })
+       
 
     except (json.JSONDecodeError, UnicodeDecodeError):
         return JsonResponse(
